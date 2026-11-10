@@ -123,3 +123,12 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+
+  - name: wiki
+    description: "Lấy tóm tắt bài Wikipedia theo tên bài. DÙNG khi user hỏi định nghĩa/kiến thức nền ổn định (\"X là gì\", \"giới thiệu về Y\", tiểu sử, khái niệm). KHÔNG dùng cho tin tức/sự kiện mới (dùng lookup với topic=news), bài đăng mạng xã hội, hay URL cụ thể (dùng fetch). Nếu kết quả found=false thì thử lại bằng tên tiếng Anh với lang=en; nếu is_disambiguation=true thì hỏi lại user muốn nghĩa nào."
+    parameters:
+      type: object
+      properties:
+        title: {type: string, default: "", description: "Tên bài Wikipedia, ví dụ \"Large language model\" hoặc \"Trí tuệ nhân tạo\". Không phải câu hỏi đầy đủ."}
+        lang: {type: string, default: "vi", description: "Mã ngôn ngữ Wikipedia: \"vi\" cho tiếng Việt, \"en\" cho tiếng Anh. Dùng \"en\" khi chủ đề là thuật ngữ kỹ thuật tiếng Anh."}
+      required: [title]
