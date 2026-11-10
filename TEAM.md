@@ -11,7 +11,7 @@
 
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
-|   1 |        |      |       |        |         |
+|   1 | Phạm Nguyên Khoa | 2A202603795 | pnkvlog1508@gmail.com |        |         |
 |   2 |        |      |       |        |         |
 
 ## Cá nhân
@@ -25,6 +25,20 @@ report/team/MSSV_HoTen.md
 Ví dụ: `report/team/20241234_NguyenVanAn.md`.
 
 Sao chép mục dưới đây cho từng thành viên.
+
+## Pham Nguyen Khoa-2A202603795
+
+### Phần việc phụ trách
+
+-
+
+### Đóng góp cụ thể
+
+-
+
+### Bằng chứng
+
+-
 
 ## HoVaTen-MSSV
 
