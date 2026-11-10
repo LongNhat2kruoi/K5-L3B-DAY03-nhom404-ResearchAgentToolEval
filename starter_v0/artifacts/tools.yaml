@@ -123,17 +123,3 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
-
-  # ---------------- Team tools ----------------
-  - name: cite_source
-    description: "Tạo một dòng trích dẫn nguồn (kèm tầng độ tin cậy 1/2/3 và nhãn) cho một nguồn đã tìm được. Dùng khi user yêu cầu trích dẫn/ghi nguồn/cite cho một bài, tweet hoặc paper cụ thể mà đã có title và URL. KHÔNG dùng để tìm nguồn (dùng lookup/papers/social_search), không dùng khi chưa có URL (hỏi lại bằng clarify), không dùng để đọc nội dung (dùng fetch)."
-    parameters:
-      type: object
-      properties:
-        title: {type: string, default: "", description: "Tiêu đề của bài/tweet/paper"}
-        url: {type: string, default: "", description: "URL đầy đủ bắt đầu bằng http:// hoặc https://"}
-        source_type: {type: string, enum: [official, paper, arxiv, news, social, other], default: "other", description: "Loại nguồn: official (blog/tài liệu chính thức), paper (bài báo khoa học), arxiv (preprint arXiv), news (báo chí uy tín), social (tweet/bài đăng mạng xã hội), other (không rõ)"}
-        author: {type: string, default: "", description: "Tác giả hoặc tài khoản đăng (không có @), bỏ trống nếu không biết"}
-        date: {type: string, default: "", description: "Ngày đăng, ví dụ 2026-06-01, bỏ trống nếu không biết"}
-        arxiv_id: {type: string, default: "", description: "Mã arXiv như 1706.03762, chỉ dùng khi source_type=arxiv"}
-      required: [title, url]
