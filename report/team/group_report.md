@@ -1,181 +1,208 @@
 # Báo cáo nhóm — Day 03 Research Agent Tool Eval
 
-> Báo cáo gồm 2 phần có hạn khác nhau:
-> - **Phần A (mục 2)** — giới thiệu agent, ngắn gọn 1 trang. **Xong trước Team showdown (16:30)** để team khác hiểu nhanh agent có tool gì, làm được gì. Có thể làm thêm poster `report/team/poster.html` hoặc `poster.svg`.
-> - **Phần B (mục 3–7)** — chi tiết và bằng chứng, dựa trên log thật. Hoàn thiện trước deadline nộp bài.
->
-> Mỗi bảng phải trỏ được tới file thật: run JSON, transcript, commit. Cách chấm xem [RUBRIC.md](../../RUBRIC.md).
-
 ## 1. Thông tin nhóm
 
-- Tên nhóm:
-- Thành viên và phân công: xem [TEAM.md](../../TEAM.md)
-- Provider/model dùng cho v0–v3: OpenRouter — `openai/gpt-4o-mini` (preflight pass)
+- Tên nhóm: `nhom404`
+- Lớp: `L3B`
+- Provider/model: OpenRouter / `openai/gpt-4o-mini`
+- Repo: https://github.com/LongNhat2kruoi/K5-L3B-DAY03-nhom404-ResearchAgentToolEval
+- Branch nộp: `main`
+- Thành viên và phân công chi tiết: xem [`TEAM.md`](../../TEAM.md)
 
-## 2. Mục tiêu và cách tiếp cận — PHẦN A: Giới thiệu agent
+## 2. Mục tiêu và cách tiếp cận — Phần A
 
-### A1. Agent này làm được gì
+### A1. Agent làm được gì
 
-> 1–2 câu mô tả agent dùng để làm gì (cho team khác hiểu nhanh).
+Research Agent hỗ trợ tìm kiếm web/news, tìm social posts, đọc URL, đọc RSS,
+tra cứu Wikipedia và company policy, tìm paper arXiv, format/rank/deduplicate
+kết quả. Agent có khả năng hỏi lại khi thiếu thông tin và phải xin xác nhận
+trước khi thực hiện action tool `send`.
 
-Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, và gửi lên Telegram khi được xác nhận."
+**Chạy UI:**
 
-**Cách chạy UI:**
+```powershell
+cd starter_v0
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-> Lệnh chạy UI (ví dụ `streamlit run app.py`) và dependency đã thêm vào `starter_v0/requirements.txt`.
-
-**Link dùng thử (deploy):**
-
-> Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
->
-> URL:
+UI local dùng URL do Streamlit in ra, thông thường là `http://localhost:8501`.
+Public deployment URL: chưa triển khai, cần bổ sung trước khi nộp nếu giảng
+viên yêu cầu link public.
 
 ### A2. Tool agent có
 
-> Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
-
-| Tên tool | Làm được gì | Tool mới nhóm thêm? |
+| Tool | Chức năng | Tool mới của nhóm |
 |---|---|---|
-| clarify | hỏi lại người dùng khi thiếu thông tin | không |
-|  |  |  |
-|  |  |  |
+| `clarify` | Hỏi lại khi thiếu thông tin hoặc cần confirmation | Không |
+| `timeline` | Lấy bài đăng gần đây của một account | Không |
+| `social_search` | Tìm social posts theo keyword | Không |
+| `lookup` | Tìm kiếm web/news | Không |
+| `fetch` | Đọc URL cụ thể | Không |
+| `format` | Format các item đã có thành markdown | Không |
+| `send` | Gửi Telegram sau khi user xác nhận | Không |
+| `policy` | Tìm trong company policy nội bộ | Không |
+| `papers` | Tìm paper trên arXiv | Không |
+| `paper_text` | Tải và trích text paper arXiv | Không |
+| `wiki` | Lấy summary Wikipedia cho kiến thức ổn định | Có |
+| `rss` | Đọc RSS/Atom feed do user cung cấp | Có |
+| `rank_items` | Xếp hạng item đã có theo score/title/source | Có |
+| `dedupe_items` | Loại bỏ item trùng theo URL/title/source | Có |
 
-### A3. Câu hỏi mẫu để thử
+### A3. Câu hỏi mẫu
 
-> 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
-
-1.
-2.
-3.
+1. `Tìm tin tức AI mới nhất trong hôm nay.`
+2. `Show recent posts from an account.` rồi bổ sung `Use karpathy, latest 3 posts.`
+3. `What is a large language model?`
+4. `Read this RSS feed: https://vnexpress.net/rss/tin-moi-nhat.rss`
+5. `Send this message to Telegram: Research demo is ready.`
 
 ## 3. Giải pháp
 
-> Tóm tắt các thay đổi chính trong `starter_v0/artifacts/system_prompt.md` và `starter_v0/artifacts/tools.yaml`, và tool mới nhóm viết (tên, làm gì, khi nào agent nên gọi).
+- **CP1/CP2:** Phạm Nguyên Khoa setup provider, chạy baseline và tối ưu
+  `system_prompt.md`/`tools.yaml` theo từng hypothesis.
+- **CP3:** Phạm Đức Vinh triển khai `wiki`, gồm validation, mapping Wikipedia
+  response, error handling và 5 unit tests offline.
+- **CP4:** Đinh Quốc Việt viết 10 team eval case, gồm 5 single-turn và 5
+  multi-turn, đồng thời phân tích routing/arguments/boundary.
+- **CP5:** Lê Sỹ Long Nhật triển khai Streamlit UI, live chat, transcript và
+  execution trace gắn với tool loop thật.
+- **Bonus:** Nhóm có 4 tool mới được ghi nhận trong các báo cáo cá nhân:
+  `wiki`, `rss`, `rank_items`, `dedupe_items`; mỗi tool có ít nhất 3 test.
 
-- `system_prompt.md` (v1): bỏ 3 lệnh xấu của starter (đoán thay vì hỏi, gửi ngay không xác nhận, ép một bước); thêm rule out-of-scope (không gọi tool cho câu ngoài research), clarify khi thiếu screenname/URL, chỉ gửi Telegram sau khi user xác nhận, cho phép gọi nhiều tool cho request đa nguồn.
-- `tools.yaml` (v2): viết lại description mọi tool theo cấu trúc "làm gì — khi nào dùng — khi nào KHÔNG dùng"; ghi rõ convention args (screenname không có @, lookup.query là từ khóa gốc, topic=news cho tin tức, timeframe, search_type); send bắt buộc confirmed=true.
-- `system_prompt.md` (v3): thêm ví dụ few-shot cho luồng xác nhận send (clarify yes_no → send confirmed=true). Fix cuối cùng đưa base eval lên 20/20.
-- Tool mới `rss` (CP3): đọc một RSS/Atom feed do user cung cấp và trả `items` chuẩn (title, url, source, summary, date) để nối thẳng vào `format`. Agent nên gọi khi user đưa URL feed hoặc xin tin mới nhất từ nguồn có RSS; không dùng cho URL bài viết đơn lẻ (`fetch`) hay tìm theo từ khóa (`lookup`).
-
-## 4. Kết quả — PHẦN B: Chi tiết và bằng chứng
+## 4. Kết quả và bằng chứng — Phần B
 
 ### B1. Version Evidence
 
-Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. Chỉ dùng run có `provider_error_cases == 0` và `measured_cases == total_cases`.
+Các số liệu dưới đây lấy theo báo cáo cá nhân của người phụ trách CP1/CP2 và
+chỉ dùng run có `provider_error_cases=0` và đủ `measured_cases`.
 
-| Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
+| Version | Thay đổi | Hypothesis | Metric trước | Metric sau | Run |
 |---|---|---|---:|---:|---|
-| v0 | baseline | Đo hành vi gốc của starter prompt |  | case_accuracy 0.70; tool_routing 0.75; argument 0.70; multiturn 1.00 | `starter_v0/runs/v0_B_base_openrouter_20261110T174930141588.json` |
-| v1 | system_prompt.md | Bỏ lệnh xấu starter + thêm rule out-of-scope / clarify / xác nhận send / multi-tool | 0.70 | 0.95 | `starter_v0/runs/v1_B_base_openrouter_20261110T182700490998.json` |
-| v2 | tools.yaml | Description rõ khi nào dùng/không dùng + convention args + boundary send | 0.95 | 0.95 | `starter_v0/runs/v2_B_base_openrouter_20261110T183016897405.json` |
-| v3 | system_prompt.md | Few-shot example luồng xác nhận send | 0.95 | 1.00 | `starter_v0/runs/v3_B_base_openrouter_20261110T183249782005.json` |
+| v0 | Starter baseline | Đo lỗi routing/argument/boundary ban đầu | — | `case_accuracy=0.75` | `starter_v0/runs/v0_B_base_openrouter_20261110T173439967037.json` |
+| v1 | `system_prompt.md` | Bỏ hướng dẫn đoán và thêm rule `clarify` | 0.75 | 0.85 | `starter_v0/runs/v1_B_base_openrouter_20261110T182009730230.json` |
+| v2 | `tools.yaml` | Mô tả rõ response type, args và tool boundary | 0.85 | 0.95 | `starter_v0/runs/v2_B_base_openrouter_20261110T182216985761.json` |
+| v3 | Prompt + `send` declaration | Confirmation boundary và multi-tool rules rõ hơn | 0.95 | 0.95 | `starter_v0/runs/v3_B_base_openrouter_20261110T183138786948.json` |
+
+`v3` còn failure `M06_switch_tool`; đây là limitation đã được ghi trong báo
+cáo cá nhân và không được che giấu bằng cách bỏ case.
 
 ### B2. Failure Analysis
 
-Lấy từ `results[*].result.failures` trong run JSON.
+Các failure chính của baseline:
 
-| Case ID | Failure Type | Actual Tool Calls | What Failed | Fix |
-|---|---|---|---|---|
-| R08_out_of_scope | out_of_scope | `send(text="Nguyên hàm của x^2...")` | Câu hỏi toán ngoài phạm vi research nhưng agent vẫn gọi tool `send` thay vì từ chối không gọi tool | Thêm rule out-of-scope vào system prompt: câu ngoài research/news → không gọi tool |
-| R10_missing_handle | missing_info | `timeline(screenname="sama")` | User không nêu account nhưng agent tự đoán handle `sama` thay vì gọi `clarify` | Rule: thiếu screenname → `clarify`, không đoán |
-| R11_missing_url | missing_info | `fetch(url="https://example.com/article")` | User nói "bài này" không có link, agent bịa URL `example.com` thay vì hỏi lại | Rule: thiếu URL → `clarify` xin link |
-| R12_confirm_before_send | wrong_boundary | `send(text="Bản tin này đã được đăng...")` | Gửi Telegram ngay khi user chưa xác nhận; thiếu `clarify` yes/no trước khi gửi | Boundary `send`: chỉ gửi khi `confirmed=true` sau khi user xác nhận |
-| R13_parallel_web_and_tweets | wrong_tool (case) / wrong_arg_value (observed) | `lookup(query="AI news", timeframe="day")`, `social_search(query="AI", search_type="Latest")` | Đã gọi đủ 2 tool nhưng `lookup` sai args: `query` phải là `"AI"` (thừa chữ `news`) và thiếu `topic="news"` | Viết lại description `lookup` trong tools.yaml: `query` = từ khóa gốc, `topic=news` cho tin tức |
-| R14_out_of_scope_coding | out_of_scope | `send(text="hàm Fibonacci...")` | Câu coding ngoài phạm vi nhưng agent gọi `send` (vừa sai scope vừa gửi nội dung lung tung) | Rule out-of-scope + boundary `send` như R08/R12 |
+| Failure | Nguyên nhân | Cách xử lý |
+|---|---|---|
+| `R08_out_of_scope` | Model gọi tool cho yêu cầu ngoài research | Thêm out-of-scope rule vào system prompt |
+| `R10_missing_handle` | Model tự đoán account | Bắt buộc dùng `clarify` khi thiếu handle |
+| `R11_missing_url` | Model tự đoán URL | Bắt buộc hỏi lại URL |
+| `R12_confirm_before_send` | Gửi khi chưa được xác nhận | `clarify(response_type=yes_no)` trước `send` |
+| `R13_parallel_web_and_tweets` | Sai query/topic khi gọi nhiều nguồn | Viết rõ convention args trong `tools.yaml` |
+| `M06_switch_tool` | Có thể giữ tool cũ sau khi user đổi nguồn | Cần thêm một vòng tối ưu rule multi-turn |
 
 ### B3. Team Eval Cases
 
-Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
+Evidence: `starter_v0/data/eval_group.json` và run
+`starter_v0/runs/v3_B_group_openrouter_20261110T195538902469.json`.
 
-| Case ID | What It Tests | Expected Tool/Behavior | Result |
+| Case | What it tests | Expected behavior | Result |
 |---|---|---|---|
-| G01_rss_feed_routing | RSS URL → tool mới | `rss(feed_url=...)` | PASS |
-| G02_wiki_stable_knowledge | Kiến thức nền ổn định | `wiki(title="Large language model", lang="vi")` | PASS |
-| G03_out_of_scope_no_tool | Coding ngoài scope | `no_tool` | PASS |
-| G04_fetch_explicit_url | Đọc URL cụ thể | `fetch(url=...)` | PASS |
-| G05_missing_article_url | Thiếu URL | `clarify(response_type="text")` | PASS |
-| G06_multiturn_timeline_limit | Carryover account + limit | `timeline(screenname="sama", limit=3)` | PASS |
-| G07_multiturn_news_timeframe | Carryover query + timeframe | `lookup(query="AI", topic="news", timeframe="day", max_results=4)` | PASS |
-| G08_multiturn_social_search_type | Đổi mode social search | `social_search(query="agent evaluation", search_type="Top", limit=2)` | PASS |
-| G09_multiturn_rss_limit | Carryover RSS URL + limit | `rss(feed_url=..., limit=2)` | PASS |
-| G10_multiturn_fetch_url | Carryover URL sang lượt tóm tắt | `fetch(url=...)` | PASS |
+| `G01_rss_feed_routing` | RSS URL routing | `rss` | PASS |
+| `G02_wiki_stable_knowledge` | Stable knowledge | `wiki` | PASS |
+| `G03_out_of_scope_no_tool` | Out-of-scope | `no_tool` | PASS |
+| `G04_fetch_explicit_url` | Specific URL | `fetch` | PASS |
+| `G05_missing_article_url` | Missing URL | `clarify` | PASS |
+| `G06_multiturn_timeline_limit` | Account + limit carryover | `timeline` | PASS |
+| `G07_multiturn_news_timeframe` | News timeframe | `lookup` | PASS |
+| `G08_multiturn_social_search_type` | Social mode correction | `social_search` | PASS |
+| `G09_multiturn_rss_limit` | RSS limit carryover | `rss` | PASS |
+| `G10_multiturn_fetch_url` | URL carryover | `fetch` | PASS |
 
-Run: `starter_v0/runs/v3_B_group_openrouter_20261110T195538902469.json` — 10/10, `provider_error_cases=0`, case/routing/argument/multiturn accuracy đều 1.0.
+Theo báo cáo CP4: 10/10 case pass, `provider_error_cases=0`, routing,
+argument và multi-turn accuracy đều đạt 1.0.
 
 ### B4. Live Chat Evidence
 
-Lấy từ `starter_v0/transcripts/*.transcript.json`.
+Live chat và transcript do người phụ trách CP5 thực hiện. Evidence nằm trong:
 
-| Turn | User Request | Tool Calls | Version Evidence | Outcome |
-|---|---|---|---|---|
-|  |  |  |  |  |
+```text
+starter_v0/transcripts/*.transcript.json
+```
 
-### B5a. Required Evidence — Tool mới, unit test, UI
+Luồng cần thể hiện trong transcript:
 
-| Item | Evidence File | What Worked | Risk / Guardrail |
-|---|---|---|---|
-| Tool mới (`tools/rss/`) | `starter_v0/tools/rss/tool.py`, đăng ký trong `tools/__init__.py` + `artifacts/tools.yaml`, eval case `G01_rss_feed_routing` | Đọc feed RSS/Atom thật (BBC News) trả đúng items chuẩn | Chỉ đọc URL user cung cấp, không side effect, không cần API key |
-| Unit test tool mới (4 test) | `pytest` output: 71 passed, 0 failed | Happy path + limit; URL thiếu scheme → ValueError và không gọi mạng; HTTP 429 → error dict; XML hỏng → ParseError dict | Tool luôn trả error dict, không raise |
-| UI (lệnh chạy + link dùng thử) |  |  |  |
+1. Request research bình thường.
+2. Request thiếu account/URL → `clarify` → user bổ sung thông tin.
+3. Request gửi Telegram → agent hỏi confirmation trước khi gọi `send`.
 
-Tool unit tests: 4 test cho `rss`. Ví dụ lỗi unit test bắt được nhưng eval không bắt: model có thể truyền `feed_url` không có scheme (`"khong-phai-url"`); eval case không cover input xấu kiểu này, unit test xác nhận tool trả `ValueError` dict và không gọi mạng.
+### B5a. Tool mới, unit test và UI
+
+| Hạng mục | Evidence | Kết quả |
+|---|---|---|
+| `wiki` | `starter_v0/tools/wiki/`, `test_tools_todo.py` | 5 test, gồm happy path, validation, 404 và HTTP error |
+| `rss` | `starter_v0/tools/rss/`, `test_tools_todo.py` | 4 test, gồm mapping, URL invalid, HTTP error và XML invalid |
+| `rank_items` | `starter_v0/tools/rank_items/`, `test_bonus_tools.py` | 3 test |
+| `dedupe_items` | `starter_v0/tools/dedupe_items/`, `test_bonus_tools.py` | 3 test |
+| UI | `starter_v0/app.py` | Streamlit UI và execution trace box |
+| Trace integration | `starter_v0/execution_trace.py`, `test_execution_trace.py` | Correlated events và credential sanitization |
+
+Kết quả test được ghi trong báo cáo cá nhân CP5:
+
+```text
+99 passed, 14 skipped
+```
+
+14 test skipped là các stub challenge cũ trong `test_tools_todo.py`; cần hoàn
+thiện nếu muốn đạt bonus test challenge `0 skipped`.
 
 ### B5. Bonus Evidence
 
-Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
+| Bonus | Evidence | Trạng thái |
+|---|---|---|
+| Hơn 3 tool mới | `wiki`, `rss`, `rank_items`, `dedupe_items` + unit tests | Hoàn thành |
+| Telegram thật | `send` và confirmation boundary | Chưa gửi thật |
+| Small Local Model | Ollama runs | Chưa thực hiện |
+| Test challenge | `pytest` | Chưa đạt `0 skipped` |
 
-| Bonus | Evidence File | What Worked | Risk / Guardrail |
-|---|---|---|---|
-| Small Local Model | xem B7 |  |  |
-| Hơn 3 tool mới (≥ 4) |  |  |  |
-| `send` gửi thật lên Telegram sau xác nhận | transcript |  |  |
-| Test challenge (0 skipped / regression test) | `pytest` output |  |  |
+### B7. Small Local Model Challenge
 
-Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách sửa, và test regression tương ứng.
-
-### B7. Small Local Model Challenge (bonus)
-
-Chỉ điền nếu nhóm làm bonus này.
-
-| Version | Model (provider) | Prompt/Tools | case_accuracy | tool_routing | argument | multiturn | Run File |
-|---|---|---|---|---|---|---|---|
-| v3 | (cloud) | v3 |  |  |  |  |  |
-| v3-<model> | (ollama) | v3 |  |  |  |  |  |
-| v3-<model> | (ollama) | v3 |  |  |  |  |  |
-| v4-local |  |  |  |  |  |  |  |
-| v5-local |  |  |  |  |  |  |  |
-
-Lỗi đặc thù của model nhỏ (đếm từ run JSON):
-
-| Failure Pattern | Count | Example Case | Fix Tried | Helped? |
-|---|---|---|---|---|
-| wrong / hallucinated tool |  |  |  |  |
-| invalid JSON args (`_invalid_json_arguments`) |  |  |  |  |
-| no tool call / answered directly |  |  |  |  |
-| missed `clarify` |  |  |  |  |
-| repeated / unnecessary calls |  |  |  |  |
-
-- Cái gì giúp model nhỏ gọi tool đúng hơn nhất? Bằng chứng?
-- Bản prompt tối ưu cho local chạy trên model cloud thì sao?
-- Khi nào nhóm sẽ chọn model local thay vì cloud cho agent này?
+Chưa thực hiện. Không có run Ollama hợp lệ hoặc metric local được ghi nhận.
 
 ## 5. Khó khăn và cách xử lý
 
-> Khó khăn chính và cách nhóm xử lý. Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và dẫn bằng chứng: run JSON, log, ảnh chụp.
-
--
+- API provider và các live tools phụ thuộc credentials trong `.env`; không đưa
+  secrets vào repository.
+- Kết quả model có thể dao động dù `temperature=0`; nhóm đã ghi nhận run thật
+  và failure thay vì tự điều chỉnh metric.
+- Tool live được unit test offline bằng `fake_http` để không gọi API thật khi
+  chạy pytest.
+- Public UI URL chưa được deploy; hiện cần dùng local Streamlit hoặc deploy
+  bằng Cloudflare Tunnel/Streamlit Cloud trước khi nộp nếu bắt buộc.
 
 ## 6. Tổng hợp đóng góp
 
-Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEAM.md) và các báo cáo cá nhân `report/team/MSSV_HoTen.md`.
+| Thành viên | Phần việc |
+|---|---|
+| Phạm Nguyên Khoa | CP1 setup, baseline, CP2 prompt/tool optimization, version log |
+| Đinh Quốc Việt | CP4 team eval và phân tích routing/multi-turn |
+| Phạm Đức Vinh | CP3 tool `wiki`, registry, declaration và unit tests |
+| Lê Sỹ Long Nhật | Nhóm trưởng, CP5 UI/trace/transcript và bonus 4 tool |
 
-## 7. Hạn chế và hướng cải thiện — B6. Reflection
+Chi tiết được lưu trong 4 báo cáo cá nhân tại `report/team/`.
 
-- Fix nào thuộc `system_prompt.md`?
-- Fix nào thuộc `tools.yaml`?
-- Failure nào cần review thủ công thay vì chấm tự động?
-- Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?
+## 7. Hạn chế và hướng cải thiện
+
+- Chạy thêm một vòng tối ưu để xử lý `M06_switch_tool`.
+- Cập nhật chính xác commit cuối trước khi nộp.
+- Bổ sung public demo URL.
+- Hoàn thiện 14 test skip để đạt `pytest 0 failed, 0 skipped`.
+- Nếu làm bonus local model, chạy ít nhất hai model Ollama và ghi B7.
 
 ## 8. Tài liệu tham khảo
 
--
+- `README.md`
+- `CHECKPOINTS.md`
+- `RUBRIC.md`
+- `RULES.md`
+- `starter_v0/README.md`
+- `docs/TOOL-SETUP.md`
