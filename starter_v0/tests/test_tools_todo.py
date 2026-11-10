@@ -157,3 +157,50 @@ def test_wiki_404_means_not_found_not_error(fake_http) -> None:
 def test_wiki_http_error_returns_error_dict(fake_http) -> None:
     fake_http(FakeResponse(status_code=503))
     assert wiki_tool(title="AI")["error"] == "HTTPError"
+
+
+RSS_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>VNExpress</title>
+  <item><title>Tin 1</title><link>https://vnexpress.net/tin-1</link>
+    <description>Mo ta 1</description><pubDate>Mon, 09 Nov 2026 10:00:00 +0700</pubDate></item>
+  <item><title>Tin 2</title><link>https://vnexpress.net/tin-2</link>
+    <description>Mo ta 2</description><pubDate>Mon, 09 Nov 2026 09:00:00 +0700</pubDate></item>
+  <item><title>Tin 3</title><link>https://vnexpress.net/tin-3</link>
+    <description>Mo ta 3</description><pubDate>Mon, 09 Nov 2026 08:00:00 +0700</pubDate></item>
+</channel></rss>"""
+
+rss_tool = TOOL_FUNCTIONS["rss"]
+
+
+def test_rss_maps_items_and_respects_limit(fake_http) -> None:
+    fake_http(FakeResponse(content=RSS_XML.encode("utf-8")))
+    result = rss_tool(feed_url="https://vnexpress.net/rss/tin-moi-nhat.rss", limit=2)
+
+    assert result["tool"] == "get_rss_items"
+    assert len(result["items"]) == 2
+    assert result["items"][0]["title"] == "Tin 1"
+    assert result["items"][0]["source"] == "vnexpress.net"
+
+
+def test_rss_rejects_url_without_scheme_and_makes_no_request(fake_http) -> None:
+    calls = fake_http(FakeResponse(content=b""))
+    result = rss_tool(feed_url="khong-phai-url")
+
+    assert result["error"] == "ValueError"
+    assert calls == []
+
+
+def test_rss_http_error_returns_error_dict(fake_http) -> None:
+    fake_http(FakeResponse(status_code=429))
+    result = rss_tool(feed_url="https://example.com/feed.rss")
+
+    assert result["error"] == "HTTPError"
+    assert result["tool"] == "get_rss_items"
+
+
+def test_rss_malformed_xml_returns_error_dict(fake_http) -> None:
+    fake_http(FakeResponse(content=b"this is not xml"))
+    result = rss_tool(feed_url="https://example.com/feed.rss")
+
+    assert result["error"] == "ParseError"
+    assert result["tool"] == "get_rss_items"
