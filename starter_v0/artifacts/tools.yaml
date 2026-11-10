@@ -16,14 +16,14 @@
 tools:
   # ---------------- Core tools ----------------
   - name: clarify
-    description: "Gửi một câu hỏi cho người dùng."
+    description: "Hỏi lại người dùng khi thiếu thông tin cần thiết để gọi tool khác (ví dụ thiếu handle, thiếu URL), hoặc khi cần xin xác nhận trước khi thực hiện một hành động không thể hoàn tác (ví dụ gửi/đăng). Luôn truyền response_type phù hợp."
     parameters:
       type: object
       properties:
         question: {type: string, default: "", description: "Câu hỏi"}
-        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời"}
-        options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn"}
-      required: [question]
+        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "BẮT BUỘC chọn đúng: 'text' khi hỏi lại thông tin còn thiếu (handle, URL, topic...); 'yes_no' khi xin xác nhận trước khi gửi/đăng/thực hiện hành động; 'choice' khi đưa ra các lựa chọn cụ thể (dùng kèm options)."}
+        options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn, chỉ dùng khi response_type=choice"}
+      required: [question, response_type]
 
   - name: timeline
     description: "Lấy các bài đăng gần đây."
@@ -86,13 +86,13 @@ tools:
 
   # ---------------- Bonus tools ----------------
   - name: send
-    description: "Gửi một đoạn văn bản đi."
+    description: "Gửi một đoạn văn bản lên kênh Telegram của nhóm. CHỈ gọi tool này khi confirmed=true. Nếu user chưa xác nhận rõ ràng (chưa trả lời 'có'/'đồng ý' sau khi được hỏi), PHẢI gọi clarify(response_type=yes_no) để hỏi xác nhận trước, không được tự gọi send."
     parameters:
       type: object
       properties:
-        text: {type: string, default: "", description: "Nội dung"}
-        confirmed: {type: boolean, default: false, description: "Cờ xác nhận"}
-      required: [text]
+        text: {type: string, default: "", description: "Nội dung cần gửi"}
+        confirmed: {type: boolean, default: false, description: "Chỉ true sau khi user đã xác nhận đồng ý gửi. Mặc định false — không được tự suy ra true."}
+      required: [text, confirmed]
 
   - name: policy
     description: "Tìm trong tài liệu nội bộ."
