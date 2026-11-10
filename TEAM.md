@@ -2,10 +2,12 @@
 
 ## Thông tin nhóm
 
-- Tên nhóm:
-- Lớp: L3A / L3B
-- Repo nhóm: `K5-L3A-DAY03-TenNhom-ResearchAgentToolEval` hoặc `K5-L3B-DAY03-TenNhom-ResearchAgentToolEval` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt:
+- Tên nhóm: nhom404
+- Lớp: L3B
+- Repo nhóm: `K5-L3B-DAY03-nhom404-ResearchAgentToolEval` (xem [SUBMISSION.md](SUBMISSION.md))
+- URL repo: https://github.com/LongNhat2kruoi/K5-L3B-DAY03-nhom404-ResearchAgentToolEval
+- Nhánh nộp: `main`
+- Commit chốt: (cập nhật trước khi nộp bài)
 
 ## Thành viên
 
