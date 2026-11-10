@@ -1,0 +1,23 @@
+{
+  "dataset_id": "day03_v2_research_bonus_tools",
+  "dataset_role": "bonus",
+  "description": "Routing checks for the two additional local research tools.",
+  "cases": [
+    {
+      "id": "B01_rank_existing_items",
+      "phase": "B",
+      "query": "Rank these existing research items by score from highest to lowest: [{\"title\":\"A\",\"score\":0.1},{\"title\":\"B\",\"score\":0.9}].",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "rank_items", "args": {"sort_by": "score", "descending": true}}]},
+      "metadata": {"what_it_tests": "rank_items routing"}
+    },
+    {
+      "id": "B02_dedupe_existing_items",
+      "phase": "B",
+      "query": "Remove duplicate research results from this list using their URL: [{\"url\":\"https://a.test\"},{\"url\":\"https://a.test\"}].",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "dedupe_items", "args": {"key": "url"}}]},
+      "metadata": {"what_it_tests": "dedupe_items routing"}
+    }
+  ]
+}

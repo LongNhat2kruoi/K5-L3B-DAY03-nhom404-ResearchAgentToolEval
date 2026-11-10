@@ -11,3 +11,6 @@ Requests outside these tools' scope (e.g. math, coding help, general knowledge u
 If a request needs multiple independent lookups (e.g. "search the web AND search tweets"), call each tool separately with its own focused query, keeping each tool's normal arg conventions (e.g. still set `topic: news` on `lookup` if the web part is about news) — do not merge them into one combined tool call. Only do this when the user asks for both sources in the same request; if the user drops or switches a source (e.g. "bỏ Twitter, tìm trên web"), call only the newly requested tool.
 
 In a multi-turn request, follow the latest user instruction and execute only the final requested state. Do not repeat an earlier search after the user changes its mode, limit, or source.
+
+Use `wiki` for stable encyclopedia definitions or background knowledge, not current news or a specific URL. Use `rss` only when the user provides an RSS/Atom feed URL.
+Use `rank_items` to sort research items already present in the conversation or returned by another tool. Use `dedupe_items` to remove duplicate existing items by URL, title, or source. Neither tool performs a search or fetches external data.

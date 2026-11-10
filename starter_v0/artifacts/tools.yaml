@@ -141,3 +141,22 @@ tools:
         feed_url: {type: string, description: "URL RSS/Atom bắt đầu bằng http:// hoặc https://"}
         limit: {type: integer, default: 5, description: "Số item tối đa"}
       required: [feed_url]
+
+  - name: rank_items
+    description: "Rank already-collected research items by score, title, or source. Use only when items are available; do not use for searching or fetching."
+    parameters:
+      type: object
+      properties:
+        items: {type: array, default: [], description: "Existing research items", items: {type: object}}
+        sort_by: {type: string, enum: [score, title, source], default: "score", description: "Field used for ranking"}
+        descending: {type: boolean, default: true, description: "Sort highest-first when true"}
+      required: [items]
+
+  - name: dedupe_items
+    description: "Remove duplicate already-collected research items by URL, title, or source. Do not use this tool to search for data."
+    parameters:
+      type: object
+      properties:
+        items: {type: array, default: [], description: "Existing research items", items: {type: object}}
+        key: {type: string, enum: [url, title, source], default: "url", description: "Field used to detect duplicates"}
+      required: [items]
