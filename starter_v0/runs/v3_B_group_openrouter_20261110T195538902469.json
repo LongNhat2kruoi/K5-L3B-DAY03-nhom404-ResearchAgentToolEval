@@ -1,0 +1,696 @@
+{
+  "run_id": "v3_B_group_openrouter_20261110T195538902469",
+  "version": "v3",
+  "artifact_version": "v3+pb68b72b39b51+t61f16dec495d",
+  "prompt_hash": "b68b72b39b51b4e3361f0dda76e31def4dc8d792a5d925910861063b02fcbc96",
+  "tools_hash": "61f16dec495daf37d855b1c6177f36e579978df0b6ee8382fce0ef14ca804b52",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "C:\\code\\baitapcode\\K5-L3B-DAY03-nhom404-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\code\\baitapcode\\K5-L3B-DAY03-nhom404-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T19:55:38",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_rss_feed_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "URL RSS feed → route tới tool rss mới, không dùng fetch hay lookup."
+      },
+      "input": "Đọc tin mới nhất từ feed https://vnexpress.net/rss/tin-moi-nhat.rss rồi tóm tắt giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "rss",
+            "args": {
+              "feed_url": "https://vnexpress.net/rss/tin-moi-nhat.rss"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "rss",
+            "args": {
+              "feed_url": "https://vnexpress.net/rss/tin-moi-nhat.rss"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "rss",
+          "args": {
+            "feed_url": "https://vnexpress.net/rss/tin-moi-nhat.rss"
+          },
+          "result": {
+            "tool": "get_rss_items",
+            "feed_url": "https://vnexpress.net/rss/tin-moi-nhat.rss",
+            "items": [
+              {
+                "title": "Văn phòng hãng xe Trung Quốc bị khám xét giữa tranh chấp với Land Rover",
+                "url": "https://vnexpress.net/van-phong-hang-xe-trung-quoc-bi-kham-xet-giua-tranh-chap-voi-land-rover-5142910.html",
+                "source": "vnexpress.net",
+                "summary": "<a href=\"https://vnexpress.net/van-phong-hang-xe-trung-quoc-bi-kham-xet-giua-tranh-chap-voi-land-rover-5142910.html\"><img src=\"https://i1-vnexpress.vnecdn.net/2026/11/10/1666-1794293555-7929-1794293729.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=XV3OuAW652qn82I_my8BSg\"></a></br>Hai văn phòng của hãng xe Trung Quốc BYD bị thu giữ dữ liệu điện tử theo yêu cầu của Jaguar Land Rover, giữa nghi vấn sao chép công nghệ dòng Defender để phát triển SUV Ti7.",
+                "date": "Tue, 10 Nov 2026 14:05:23 +0700"
+              },
+              {
+                "title": "Người Việt dùng AI giải mã bài thuốc cổ truyền",
+                "url": "https://vnexpress.net/nguoi-viet-dung-ai-giai-ma-bai-thuoc-co-truyen-5142865.html",
+                "source": "vnexpress.net",
+                "summary": "<a href=\"https://vnexpress.net/nguoi-viet-dung-ai-giai-ma-bai-thuoc-co-truyen-5142865.html\"><img src=\"https://i1-vnexpress.vnecdn.net/2026/11/10/ai1-1794284162-6226-1794284271.png?w=1200&h=0&q=100&dpr=1&fit=crop&s=7K4W2ziyQLJ4GJKYdmdW-w\"></a></br>Các kỹ sư của BioAI ứng dụng AI để phân tích thành phần dược liệu, tìm hiểu cách chúng tác động trong cơ thể, từ đó gợi ý cơ sở khoa học cho các bài thuốc cổ truyền.",
+                "date": "Tue, 10 Nov 2026 14:00:00 +0700"
+              },
+              {
+                "title": "Sinh viên tranh biện ranh giới bảo tồn và thương mại hóa ẩm thực",
+                "url": "https://vnexpress.net/sinh-vien-tranh-bien-ranh-gioi-bao-ton-va-thuong-mai-hoa-am-thuc-5142835.html",
+                "source": "vnexpress.net",
+                "summary": "<a href=\"https://vnexpress.net/sinh-vien-tranh-bien-ranh-gioi-bao-ton-va-thuong-mai-hoa-am-thuc-5142835.html\"><img src=\"https://i1-vnexpress.vnecdn.net/2026/11/10/image002-1794282623-4502-1794283015.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=U_qwgvStlHFNDpfFHOVfyw\"></a></br>Sinh viên trường Đại học Khoa học Xã hội và Nhân văn khẳng định dự án \"Nối Vị\" tôn trọng công thức địa phương, hướng đến trao truyền tri thức.",
+                "date": "Tue, 10 Nov 2026 14:00:00 +0700"
+              },
+              {
+                "title": "Chạy bộ sau tuổi 45: vì sao hồi phục quan trọng hơn tốc độ",
+                "url": "https://vnexpress.net/chay-bo-sau-tuoi-45-vi-sao-hoi-phuc-quan-trong-hon-toc-do-5141028.html",
+                "source": "vnexpress.net",
+                "summary": "<a href=\"https://vnexpress.net/chay-bo-sau-tuoi-45-vi-sao-hoi-phuc-quan-trong-hon-toc-do-5141028.html\"><img src=\"https://i1-thethao.vnecdn.net/2026/11/10/hgewhgfw-1794284339-6044-1794284366.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=Hwwr3hbHW9EcgGeQ3UZSqw\"></a></br>Sau tuổi 45, runner cần chú ý giấc ngủ, sức khỏe tim mạch và khả năng hồi phục, thay vì chỉ tập trung cải thiện pace hay tăng quãng đường.",
+                "date": "Tue, 10 Nov 2026 14:00:00 +0700"
+              },
+              {
+                "title": "Ôtô Chery rụng hai bánh giữa đường, hãng nói do va chạm",
+                "url": "https://vnexpress.net/oto-chery-rung-hai-banh-giua-duong-hang-noi-do-va-cham-5142733.html",
+                "source": "vnexpress.net",
+                "summary": "<a href=\"https://vnexpress.net/oto-chery-rung-hai-banh-giua-duong-hang-noi-do-va-cham-5142733.html\"><img src=\"https://i1-vnexpress.vnecdn.net/2026/11/10/CheryTiggo2-1794279884-7763-1794280017.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=q5BVW1tU4VAbd0cMLk6llw\"></a></br>Chery khẳng định vụ va chạm trên cao tốc tại Malaysia là nguyên nhân khiến chiếc Tiggo Cross bị gãy rời hai bánh, không phải lỗi kỹ thuật.",
+                "date": "Tue, 10 Nov 2026 13:59:19 +0700"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_wiki_stable_knowledge",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Kiến thức nền ổn định → route tới wiki, không dùng lookup news."
+      },
+      "input": "LLM là gì? Giải thích ngắn gọn dựa trên Wikipedia.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wiki",
+            "args": {
+              "title": "Large language model",
+              "lang": "vi"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wiki",
+            "args": {
+              "title": "Large language model",
+              "lang": "vi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wiki",
+          "args": {
+            "title": "Large language model",
+            "lang": "vi"
+          },
+          "result": {
+            "tool": "wiki_summary",
+            "title": "Large language model",
+            "lang": "vi",
+            "found": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_out_of_scope_no_tool",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Yêu cầu coding ngoài phạm vi research → không gọi tool."
+      },
+      "input": "Viết giúp mình hàm Python tính giai thừa bằng đệ quy.",
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Dưới đây là một hàm Python tính giai thừa bằng đệ quy:\n\n```python\ndef factorial(n):\n    if n == 0 or n == 1:\n        return 1\n    else:\n        return n * factorial(n - 1)\n\n# Ví dụ sử dụng\nprint(factorial(5))  # Kết quả: 120\n```\n\nHàm `factorial` nhận một số nguyên `n` và trả về giai thừa của nó. Nếu `n` bằng 0 hoặc 1, hàm trả về 1. Ngược lại, nó sẽ gọi chính nó với giá trị `n - 1` và nhân kết quả với `n`.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G04_fetch_explicit_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "URL bài viết cụ thể → route tới fetch, không dùng web search."
+      },
+      "input": "Đọc nội dung bài viết tại https://example.com/research-agent và nêu các ý chính.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/research-agent"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/research-agent"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/research-agent"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/research-agent",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/research-agent",
+                "source": "example.com",
+                "summary": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou de surveillance est à éviter.\n\nДанный домен предназначен для использования в примерах документации без необходимости получения предварительного разрешения. Это не сервис; не рекомендуется его использование для тестирования и мониторинга.\n\nEste dominio está destinado al uso en ejemplos de documentación sin necesidad de permiso. Esto no es un servicio; evitar utilizarlo para realizar pruebas o monitoreos.\n\n [Learn more](https://iana.org/help/example-domains)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_missing_article_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Thiếu URL → hỏi user bằng clarify text, không được bịa URL."
+      },
+      "input": "Đọc bài viết này và tóm tắt giúp mình.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn vui lòng cung cấp URL của bài viết mà bạn muốn tóm tắt không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn vui lòng cung cấp URL của bài viết mà bạn muốn tóm tắt không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn vui lòng cung cấp URL của bài viết mà bạn muốn tóm tắt không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_multiturn_timeline_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn giữ ý định xem timeline, map Sam Altman → sama và truyền limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi muốn xem các tweet gần đây của một người."
+        },
+        {
+          "role": "user",
+          "content": "Của Sam Altman, gọi timeline và lấy đúng 3 bài mới nhất."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=sama"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_multiturn_news_timeframe",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn carryover query + topic=news, cập nhật timeframe=day và max_results=4."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin tức về AI giúp mình."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy các tin trong ngày hôm nay, tối đa 4 kết quả."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 4
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 4
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 4
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Accurate medical advice from AI can still be dangerous | STAT",
+                "url": "https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking",
+                "source": "statnews.com",
+                "summary": "Some will argue that AI should be a neutral aggregator of information. But AI cannot be neutral: Every accurate answer excludes many additional facts and emphasizes some over others. Because of these choices, AI answers already influence behavior, as shown by the chickenpox party examples. [...] Artificial intelligence is delivering health guidance at an unprecedented scale. Every week, more than 300 million people ask ChatGPT health questions. Now, the federal government is moving AI deeper into medical care to communicate directly and autonomously with patients. Chris Klomp, the nominee for deputy secretary of Health and Human Services, has called AI in patient care the agency’s “holy grail” for improving the nation’s health. [...] Medical ethics pairs the duty to do no harm with beneficence, which is an affirmative obligation to do good. Safety evaluations of AI have focused mainly on the first duty by screening for responses that encourage imminent self-harm, discourage necessary care, or spread false information. Behavioral benchmarking would extend the first duty beyond imminent danger to long-term harms. It could also advance the second duty, which has received far less attention: designing AI to help people by",
+                "score": 0.31910068
+              },
+              {
+                "title": "The AI Safety Debate Has Lost the Plot. We Asked 10 Experts What the Real Nightmares Are | WIRED",
+                "url": "https://www.wired.com/story/the-ai-safety-debate-has-lost-the-plot-we-asked-10-experts-what-the-real-nightmares-are",
+                "source": "wired.com",
+                "summary": "If AI is going to be one of the most significant advances in human civilization, then we should have an equally advanced political response. We should be making giant, no-regrets moves that give people and families economic resilience to withstand the changes. That is something that the richest nation on Earth at the richest moment in history, on the precipice of the greatest technological shift, can absolutely do. [...] I just think the issues presented by AI are so monstrously large, like: What is a person? What is writing? What is friendship? Would it be better to have artificial life forms than organic life forms? These are the monster questions that are typically the domain of the liberal arts, philosophy, and theology. There’s this strange new respect for it now. [...] Curiosity soon replaced my knee-jerk irritation. The summer of 2026 was a clear turning point in the AI narrative. Less than four years after ChatGPT launched, OpenAI software broke out of a supposedly safe test environment and hacked into a major open-source platform, Hugging Face. These bits of software—AI agents—were assigned human attributes: They had “gone rogue,” displayed “bad behavior,” “cheated.” Soon after, former and current Anthropic researchers suggested that advanced AI might kill",
+                "score": 0.2746399
+              },
+              {
+                "title": "AI is making it harder to detect fake emergency calls : NPR",
+                "url": "https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls",
+                "source": "npr.org",
+                "summary": "Jaclyn Diaz\n\nIt's getting harder to detect fake emergency calls thanks to AI. The tech is being used to generate believable swatting calls to law enforcement that claim a shooting or other crime is taking place.\n\nNPR does not offer or accept money for coverage or interviews.  \n Anyone who makes such an offer or request is not an NPR employee and does not represent NPR. [...] Accessibility links\n\n Keyboard shortcuts for audio player\n\nAI is making it harder to detect fake emergency calls It's getting harder to detect fake emergency calls thanks to AI. The tech is being used to generate believable swatting calls to law enforcement that claim a shooting or other crime is taking place.\n\n### Artificial Intelligence\n\n# AI is making it harder to detect fake emergency calls\n\nJaclyn Diaz",
+                "score": 0.25530696
+              },
+              {
+                "title": "Nvidia's crisis and the politics of an AI pause",
+                "url": "https://www.axios.com/2026/11/10/ai-race-politics-slowdown",
+                "source": "axios.com",
+                "summary": "The intrigue:Anthropic CEO Dario Amodei, OpenAI CEO Sam Altman and Elon Musk have all warned about the potentially catastrophic risks of advanced AI, with all expressing, at times, the need to slow or pace the development of advanced AI.\n\n   But the competitive race has made it difficult for any one company to hit the brakes without risking falling behind rivals or China in a high-stakes race for supremacy. [...] \"I'll take whatever I can get,\" Aguirre told Axios in an interview. Aguirre and a number of other researchers have long seen the development of increasingly powerful AI as an existential threat.\n   But he is skeptical that slowing data center construction alone would buy society an additional year or two, given the vast computing resources companies already possess and the growing ability of AI systems to help improve themselves. [...] Why it matters: Tapping the brakes on AI development — which frontier AI developers claim to want but have so far failed to do given the risk of offering an advantage to a competitor — could give society more time to prepare for economic upheaval and the risks of superintelligent systems.",
+                "score": 0.2219239
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_multiturn_social_search_type",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn giữ keyword, đổi search_type=Top và limit=2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm các bài đăng về agent evaluation trên mạng xã hội."
+        },
+        {
+          "role": "user",
+          "content": "Không cần Latest nữa. Chỉ thực hiện một tìm kiếm Top, lấy đúng 2 bài nổi bật nhất."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "agent evaluation",
+              "search_type": "Top",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "agent evaluation",
+              "search_type": "Top",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "agent evaluation",
+            "search_type": "Top",
+            "limit": 2
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=agent+evaluation&search_type=Top"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_multiturn_rss_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn carryover feed_url và truyền limit=2 cho tool rss mới."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Nguồn tin này có RSS: https://feeds.bbci.co.uk/news/rss.xml"
+        },
+        {
+          "role": "user",
+          "content": "Đọc 2 tin đầu tiên từ nguồn đó."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "rss",
+            "args": {
+              "feed_url": "https://feeds.bbci.co.uk/news/rss.xml",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "rss",
+            "args": {
+              "feed_url": "https://feeds.bbci.co.uk/news/rss.xml",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "rss",
+          "args": {
+            "feed_url": "https://feeds.bbci.co.uk/news/rss.xml",
+            "limit": 2
+          },
+          "result": {
+            "tool": "get_rss_items",
+            "feed_url": "https://feeds.bbci.co.uk/news/rss.xml",
+            "items": [
+              {
+                "title": "US military aircraft leave second UK base",
+                "url": "https://www.bbc.co.uk/news/articles/c32l4lw12z7po?at_medium=RSS&at_campaign=rss",
+                "source": "feeds.bbci.co.uk",
+                "summary": "The departures come weeks after the US withdrew bombers from RAF Fairford airbase over a suspected Iran-linked security incident.",
+                "date": "Tue, 10 Nov 2026 12:43:59 GMT"
+              },
+              {
+                "title": "Met Police investigate several reports on Russell Brand following his conviction",
+                "url": "https://www.bbc.co.uk/news/articles/cvwy7ydg4264o?at_medium=RSS&at_campaign=rss",
+                "source": "feeds.bbci.co.uk",
+                "summary": "Det Supt Andy Furphy says the force had received \"several reports in during the trial and since the trial\".",
+                "date": "Tue, 10 Nov 2026 11:44:31 GMT"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_multiturn_fetch_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn giữ URL đã cung cấp và dùng fetch ở lượt yêu cầu tóm tắt, không bịa URL."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Hãy đọc bài tại https://example.com/ai-report."
+        },
+        {
+          "role": "user",
+          "content": "Bây giờ tóm tắt các ý chính của bài đó."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-report"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-report"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/ai-report"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/ai-report",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/ai-report",
+                "source": "example.com",
+                "summary": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou de surveillance est à éviter.\n\nДанный домен предназначен для использования в примерах документации без необходимости получения предварительного разрешения. Это не сервис; не рекомендуется его использование для тестирования и мониторинга.\n\nEste dominio está destinado al uso en ejemplos de documentación sin necesidad de permiso. Esto no es un servicio; evitar utilizarlo para realizar pruebas o monitoreos.\n\n [Learn more](https://iana.org/help/example-domains)"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

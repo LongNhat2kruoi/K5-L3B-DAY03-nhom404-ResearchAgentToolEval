@@ -26,16 +26,16 @@ tools:
       required: [question, response_type]
 
   - name: timeline
-    description: "Lấy các bài đăng gần đây."
+    description: "Lấy các bài đăng gần đây của một tài khoản cụ thể. Dùng khi user hỏi bài đăng của một người; screenname không có @ và limit phải truyền đúng số lượng user yêu cầu. Không dùng cho tìm theo từ khóa (dùng social_search); không đoán screenname."
     parameters:
       type: object
       properties:
         screenname: {type: string, default: "", description: "Tên tài khoản"}
-        limit: {type: integer, default: 5, description: "Số lượng"}
+        limit: {type: integer, default: 5, description: "Số lượng bài đăng; nếu user nêu số cụ thể thì bắt buộc truyền số đó"}
       required: [screenname]
 
   - name: social_search
-    description: "Tìm trên mạng xã hội."
+    description: "Tìm bài đăng theo từ khóa trên mạng xã hội. Dùng search_type=Latest cho bài mới nhất hoặc Top cho bài nổi bật. Nếu user đổi mode trong lượt mới, chỉ gọi một lần với mode cuối cùng, không lặp mode cũ."
     parameters:
       type: object
       properties:
@@ -132,3 +132,12 @@ tools:
         title: {type: string, default: "", description: "Tên bài Wikipedia, ví dụ \"Large language model\" hoặc \"Trí tuệ nhân tạo\". Không phải câu hỏi đầy đủ."}
         lang: {type: string, default: "vi", description: "Mã ngôn ngữ Wikipedia: \"vi\" cho tiếng Việt, \"en\" cho tiếng Anh. Dùng \"en\" khi chủ đề là thuật ngữ kỹ thuật tiếng Anh."}
       required: [title]
+
+  - name: rss
+    description: "Đọc một RSS/Atom feed và trả về các tin mới nhất. DÙNG khi user cung cấp URL feed; KHÔNG dùng cho URL bài viết đơn lẻ (dùng fetch), tìm kiếm từ khóa (dùng lookup/social_search), hoặc bài đăng của một tài khoản (dùng timeline)."
+    parameters:
+      type: object
+      properties:
+        feed_url: {type: string, description: "URL RSS/Atom bắt đầu bằng http:// hoặc https://"}
+        limit: {type: integer, default: 5, description: "Số item tối đa"}
+      required: [feed_url]

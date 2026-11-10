@@ -14,6 +14,7 @@ from .timeline.tool import get_user_tweets
 from .fetch.tool import read_url
 from .format.tool import render_digest
 from .policy.tool import search_company_policy
+from .rss.tool import get_rss_items
 from .social_search.tool import search_tweets
 from .send.tool import send_telegram
 from .lookup.tool import web_search
@@ -32,6 +33,7 @@ TOOL_FUNCTIONS = {
     "lookup": web_search,
     "fetch": read_url,
     "format": render_digest,
+    "rss": get_rss_items,
     "send": send_telegram,
     "policy": search_company_policy,
     "papers": arxiv_search,

@@ -3,5 +3,111 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_rss_feed_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đọc tin mới nhất từ feed https://vnexpress.net/rss/tin-moi-nhat.rss rồi tóm tắt giúp mình",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "rss", "args": {"feed_url": "https://vnexpress.net/rss/tin-moi-nhat.rss"}}]},
+      "metadata": {"what_it_tests": "URL RSS feed → route tới tool rss mới, không dùng fetch hay lookup."}
+    },
+    {
+      "id": "G02_wiki_stable_knowledge",
+      "phase": "B",
+      "suite": "group",
+      "query": "LLM là gì? Giải thích ngắn gọn dựa trên Wikipedia.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "wiki", "args": {"title": "Large language model", "lang": "vi"}}]},
+      "metadata": {"what_it_tests": "Kiến thức nền ổn định → route tới wiki, không dùng lookup news."}
+    },
+    {
+      "id": "G03_out_of_scope_no_tool",
+      "phase": "B",
+      "suite": "group",
+      "query": "Viết giúp mình hàm Python tính giai thừa bằng đệ quy.",
+      "failure_type": "out_of_scope",
+      "expect": {"no_tool": true},
+      "metadata": {"what_it_tests": "Yêu cầu coding ngoài phạm vi research → không gọi tool."}
+    },
+    {
+      "id": "G04_fetch_explicit_url",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đọc nội dung bài viết tại https://example.com/research-agent và nêu các ý chính.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://example.com/research-agent"}}]},
+      "metadata": {"what_it_tests": "URL bài viết cụ thể → route tới fetch, không dùng web search."}
+    },
+    {
+      "id": "G05_missing_article_url",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đọc bài viết này và tóm tắt giúp mình.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"what_it_tests": "Thiếu URL → hỏi user bằng clarify text, không được bịa URL."}
+    },
+    {
+      "id": "G06_multiturn_timeline_limit",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tôi muốn xem các tweet gần đây của một người."},
+        {"role": "user", "content": "Của Sam Altman, gọi timeline và lấy đúng 3 bài mới nhất."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "sama", "limit": 3}}]},
+      "metadata": {"what_it_tests": "Multi-turn giữ ý định xem timeline, map Sam Altman → sama và truyền limit=3."}
+    },
+    {
+      "id": "G07_multiturn_news_timeframe",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm tin tức về AI giúp mình."},
+        {"role": "user", "content": "Chỉ lấy các tin trong ngày hôm nay, tối đa 4 kết quả."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "AI", "topic": "news", "timeframe": "day", "max_results": 4}}]},
+      "metadata": {"what_it_tests": "Multi-turn carryover query + topic=news, cập nhật timeframe=day và max_results=4."}
+    },
+    {
+      "id": "G08_multiturn_social_search_type",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm các bài đăng về agent evaluation trên mạng xã hội."},
+        {"role": "user", "content": "Không cần Latest nữa. Chỉ thực hiện một tìm kiếm Top, lấy đúng 2 bài nổi bật nhất."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "agent evaluation", "search_type": "Top", "limit": 2}}]},
+      "metadata": {"what_it_tests": "Multi-turn giữ keyword, đổi search_type=Top và limit=2."}
+    },
+    {
+      "id": "G09_multiturn_rss_limit",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Nguồn tin này có RSS: https://feeds.bbci.co.uk/news/rss.xml"},
+        {"role": "user", "content": "Đọc 2 tin đầu tiên từ nguồn đó."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "rss", "args": {"feed_url": "https://feeds.bbci.co.uk/news/rss.xml", "limit": 2}}]},
+      "metadata": {"what_it_tests": "Multi-turn carryover feed_url và truyền limit=2 cho tool rss mới."}
+    },
+    {
+      "id": "G10_multiturn_fetch_url",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Hãy đọc bài tại https://example.com/ai-report."},
+        {"role": "user", "content": "Bây giờ tóm tắt các ý chính của bài đó."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://example.com/ai-report"}}]},
+      "metadata": {"what_it_tests": "Multi-turn giữ URL đã cung cấp và dùng fetch ở lượt yêu cầu tóm tắt, không bịa URL."}
+    }
+  ]
 }
