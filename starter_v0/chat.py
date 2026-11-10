@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,7 @@ from env_loader import load_lab_env
 from providers import make_provider
 from providers.base import ToolCall
 from tools import TOOL_FUNCTIONS, load_tool_declarations, to_openai_tools
+from execution_trace import TraceSink, make_event, new_request_id
 from versioning import artifact_version_dict, build_artifact_version
 
 
@@ -84,12 +86,25 @@ def run_model_tool_loop(
     tools: list[dict[str, Any]],
     model: str | None,
     max_tool_rounds: int,
+    request_id: str | None = None,
+    event_sink: TraceSink | None = None,
 ) -> dict[str, Any]:
+    request_id = request_id or new_request_id()
     working_messages = list(messages)
     rounds: list[dict[str, Any]] = []
     all_tool_events: list[dict[str, Any]] = []
+    trace_events: list[dict[str, Any]] = []
+
+    def emit(event_type: str, data: dict[str, Any]) -> None:
+        event = make_event(request_id, event_type, data)
+        trace_events.append(event)
+        if event_sink:
+            event_sink(event)
+
+    emit("agent_started", {"status": "running"})
 
     for round_index in range(1, max_tool_rounds + 1):
+        emit("query_analyzed", {"round": round_index, "status": "running"})
         response = provider.complete(working_messages, tools, model=model, temperature=0.0)
         calls = response.tool_calls
         round_record: dict[str, Any] = {
@@ -101,25 +116,41 @@ def run_model_tool_loop(
 
         if not calls:
             rounds.append(round_record)
+            emit("final_response", {"status": "completed", "round": round_index})
+            emit("agent_completed", {"status": "completed"})
             return {
                 "status": "answered",
                 "assistant_text": response.text or "",
                 "rounds": rounds,
                 "tool_events": all_tool_events,
+                "trace_events": trace_events,
             }
 
         working_messages.append(assistant_tool_message(response.text, calls))
         non_clarification_events: list[dict[str, Any]] = []
 
         for call in calls:
-            print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
+            emit("tool_selected", {"tool_name": call.name, "input": call.args, "status": "pending"})
+            started = time.perf_counter()
+            emit("tool_started", {"tool_name": call.name, "input": call.args, "status": "running"})
+            print(f"TOOL {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
             event = execute_tool_call(call)
+            duration_ms = round((time.perf_counter() - started) * 1000, 2)
             round_record["tool_results"].append(event)
             all_tool_events.append(event)
 
+            result = event.get("result", {})
+            failed = isinstance(result, dict) and bool(result.get("error"))
+            emit("tool_failed" if failed else "tool_completed", {
+                "tool_name": call.name,
+                "input": call.args,
+                "output": result,
+                "status": "failed" if failed else "completed",
+                "duration_ms": duration_ms,
+            })
+
             # Detect the clarification/pause tool by its output flag (rename-proof),
             # not by a hard-coded tool name.
-            result = event.get("result", {})
             if isinstance(result, dict) and result.get("awaiting_user"):
                 question = result.get("question") or call.args.get("question") or "Bạn bổ sung thêm thông tin nhé."
                 rounds.append(round_record)
@@ -128,6 +159,7 @@ def run_model_tool_loop(
                     "assistant_text": question,
                     "rounds": rounds,
                     "tool_events": all_tool_events,
+                    "trace_events": trace_events,
                 }
 
             non_clarification_events.append(event)
@@ -140,6 +172,7 @@ def run_model_tool_loop(
         "assistant_text": f"Stopped after {max_tool_rounds} tool rounds. Inspect the transcript for details.",
         "rounds": rounds,
         "tool_events": all_tool_events,
+        "trace_events": trace_events,
     }
 
 
@@ -221,6 +254,7 @@ def main() -> None:
             "assistant_text": None,
             "rounds": [],
             "tool_events": [],
+            "trace_events": [],
         }
 
         try:
@@ -230,6 +264,7 @@ def main() -> None:
                 tools=openai_tools,
                 model=args.model,
                 max_tool_rounds=args.max_tool_rounds,
+                request_id=f"{transcript_id}_turn_{turn_index}",
             )
             turn_record.update(result)
             assistant_text = result["assistant_text"]
